@@ -12,11 +12,11 @@ class Weekly{
     }
 }
 
-var mo = new Weekly('montag', 'En', 'En', 'Wl', 'Wl', 'I, Sp', 'I, Sp', 'Ch, Ph', 'Ch, Ph', 'Fr', 'Fr');
-var di = new Weekly('dienstag', 'Ph', 'Ph', 'M', 'M', 'It', 'It', 'I, Fr, Sp', 'I, Fr, Sp', '', '');
-var mi = new Weekly('mittwoch', 'CT', 'CT', 'Eth', 'Eth', 'De', 'De', 'IT', 'IT', '', '');
-var don = new Weekly('donnerstag', 'GGK', 'GGK', 'M', 'M', 'IT', 'IT', 'CHEMIE IHR OPFER', 'CHEMIE IHR OPFER', '', '');
-var fr = new Weekly('freitag', 'En', 'En', 'S', 'S', 'De', 'De', 'SK Aischa SK!!!!!', 'SK Aischa SK!!!!!', '', '');
+var mo = new Weekly('montag', 'Englisch', 'Englisch', 'Wirtschaftslehre', 'Wirtschaftslehre', 'I, Sp', 'I, Sp', 'Ch, Ph', 'Ch, Ph', 'Französisch', 'Französisch');
+var di = new Weekly('dienstag', 'Physik', 'Physik', 'Mathe', 'Mathe', 'Informatik', 'Informatik', 'I, Fr, Sp', 'I, Fr, Sp', '', '');
+var mi = new Weekly('mittwoch', 'CTIT', 'CTIT', 'Ethik', 'Ethik', 'Deutsch', 'Deutsch', 'Informatik', 'Informatik', '', '');
+var don = new Weekly('donnerstag', 'GGK', 'GGK', 'Mathe', 'Mathe', 'Informatik', 'Informatik', 'CHEMIE IHR OPFER', 'CHEMIE IHR OPFER', '', '');
+var fr = new Weekly('freitag', 'Englisch', 'Englisch', 'Sport', 'Sport', 'Deutsch', 'Deutsch', 'SK Aischa SK!!!!!', 'SK Aischa SK!!!!!', '', '');
 var days = [mo, di, mi, don, fr];
 
 function dailySender(){
@@ -90,11 +90,10 @@ client.on('message', message => {
    // message.channel.send('Justin stinkt ;D');
     var date = new Date().getDay();
     var hour = new Date().getTime();
-    console.log(hour);
     var res = functionGet(message.content)
     switch(message.content){
         case '?help':
-            message.channel.send(':exclamation: Du kannst folgende Befehle nutzen: :exclamation:\n :white_small_square: ?help  -  Zeigt alle Befehle \n :white_small_square: ?<Wochentag>  -  Gibt den Plan des eingegebenen Tages aus \n :white_small_square: ?heute  -  Gibt den heutigen Plan aus \n :white_small_square: ?morgen  -  Gibt den morgigen Plan aus');
+            message.channel.send(':exclamation: Du kannst folgende Befehle nutzen: :exclamation:\n :white_small_square: ?help  -  Zeigt alle Befehle \n :white_small_square: ?<Wochentag>  -  Gibt den Plan des eingegebenen Tages aus \n :white_small_square: ?heute  -  Gibt den heutigen Plan aus \n :white_small_square: ?später  -  Gibt die restlichen Fächer des Tages aus \n :white_small_square: ?morgen  -  Gibt den morgigen Plan aus');
             break;
         case '?nächste':
             message.channel.send(days[date-1].hours[getLesson()+1]);
@@ -106,6 +105,16 @@ client.on('message', message => {
         case '?heute':
             if(date <= 5){message.channel.send(printDay(date-1))};
             break;
+        case '?später':
+            var nachricht = 'Du hast heute noch folgende Fächer!';
+
+            for(var i = getLesson(); i<11; i++){
+                console.log(i);
+                if(days[date-1].hours[i-1] != '') {nachricht +=  '\n' +  i + ': ' + days[date-1].hours[i-1];}
+            }
+            nachricht += '\n:partying_face: FEIERABEND :partying_face:';
+            message.channel.send(nachricht)
+            break;
         case '?morgen':
             if(date < 5){
                 message.channel.send(printDay(date));
@@ -115,6 +124,7 @@ client.on('message', message => {
             }
             break;
         case '?montag':
+            console.log('montag case');
             message.channel.send(printDay(0));
             break;
         case '?dienstag':
@@ -132,6 +142,20 @@ client.on('message', message => {
             break;
         case '?samstag': message.channel.send("Du :cookie:"); break;
         case '?sonntag': message.channel.send("Du :cookie:"); break;
+        case '?nevergonnagiveyouup': 
+            message.channel.send('NEVER GONNA LET YOU DOWN');
+            //const botkanal = client.channels.cache.find(ch => ch.name === 'botchannel');
+            //botkanal.send('!play https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+        case 'test':
+            const botkanal = client.channels.cache.find(ch => ch.name === 'botchannel');
+            const voice = client.channels.cache.find(ch => ch.name === 'Lobby');
+            voice.join().then(connection => {
+                botkanal.send('!join');
+                botkanal.send('!play https://www.youtube.com/watch?v=YgGzAKP_HuM');
+                setTimeout(function(){
+                    voice.leave();
+                }, 5000);
+            })
     }
 });
 
@@ -166,4 +190,4 @@ function printDay(day){
     return nachricht;
 }
 
-client.login('');
+client.login(''); //insert token
